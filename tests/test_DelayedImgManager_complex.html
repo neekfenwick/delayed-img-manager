@@ -3,7 +3,7 @@
 	<script type="text/javascript">
 		var dojoConfig = { async: 1 };
 	</script>
-	<script type="text/javascript" href="../dojo/dojo.js"></script>
+	<script type="text/javascript" src="../../dojo/dojo.js"></script>
 
 	<script type="text/javascript">
 		require([
@@ -13,9 +13,10 @@
 		], function(dom, DelayedImgManager) {
 
 			// Create the manager
+			var container = dom.byId('testContainer');
 			var dim = new DelayedImgManager({
 				container: container,
-				scrollContainer: scrollContainer
+				scrollContainer: container
 			});
 			dim.startup();
 		});
@@ -27,15 +28,17 @@
 			top: 200px; /* offset us down a bit */
 			border: 2px solid black;
 			height: 140px; /* Give us scrollbars */
+			width: 250px; /* only one per row */
+			overflow: auto;
 		}
 	</style>
 </head><body>
 	<div id="testContainer">
-		<img data-src="resources/one.png">
-		<img data-src="resources/two.png">
-		<img data-src="resources/three.png">
-		<img data-src="resources/four.png">
-		<img data-src="resources/five.png">
-		<img data-src="resources/six.png">
+		<img data-src="resources/one.png" src="resources/dummy.png">
+		<img data-src="resources/two.png" src="resources/dummy.png">
+		<img data-src="resources/three.png" src="resources/dummy.png">
+		<img data-src="resources/four.png" src="resources/dummy.png">
+		<img data-src="resources/five.png" src="resources/dummy.png">
+		<img data-src="resources/six.png" src="resources/dummy.png">
 	</div>
 </body></html>

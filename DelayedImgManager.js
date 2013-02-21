@@ -6,12 +6,11 @@ define([
 	"dojo/Deferred",
 	"dojo/_base/array",
 	"dojo/_base/window",
-	"dijit/_Widget",
 	"dojo/dom-geometry",
 	"dojo/window",
 	"dojo/dom-attr",
 	"dojo/NodeList-dom"
-	], function( on, declare, lang, query, Deferred,  array, winCore, _Widget, domGeom, win, attr ){
+	], function( on, declare, lang, query, Deferred, array, winCore, domGeom, win, attr ){
 
 		return declare("delayed-img-manager.DelayedImgManager", null, {
 			// summary:
@@ -24,10 +23,10 @@ define([
 			// container:
 			//		The dom node that contains <img> nodes we 
 			//		care about.
-			container: winCore.body(),
+			container: undefined,
 			// scrollContainer:
 			//		The dom node whose scroll event we listen to.
-			scrollContainer: winCore.global,
+			scrollContainer: undefined,
 			// threshold:
 			//		Number of pixels an img has to come to being
 			//		in view to be considered swappable.
@@ -48,6 +47,8 @@ define([
 				// summary:
 				//		Scan for img nodes and swap any that
 				//		are currently in view.
+				this.container = this.container || winCore.body();
+				this.scrollContainer = this.scrollContainer || winCore.global;
 				this.inherited(arguments);
 				this.scan();
 				this.onScroll();
@@ -63,7 +64,8 @@ define([
 			onScroll: function(e) {
 				console.log( "scroll" );
 				// examine all our images to see if any are now in-view
-				var box = domGeom.position(this.scrollContainer, true); //win.getBox();
+				var box = this.scrollContainer.nodeName ?
+				   	domGeom.position(this.scrollContainer, true) : win.getBox();
 				var nodeToRemove = [];
 				array.forEach(this.imgList, lang.hitch(this,
 					function(n, index, arr) {
@@ -71,19 +73,26 @@ define([
 							var ds = attr.get(n, 'data-src');
 							if (ds && ds !== null) {
 
-								var position = domGeom.position( n ),
+								var position = domGeom.position( n, true ),
 									imgTop = n.offsetTop,
+									imgBottom,
 									parent = n.parentNode;
-								do {
-								    if (parent != this.scrollContainer) {
+								// The img may be nested within any number of
+								// parents between it and scrollContainer.
+								// Calculate total offsetTop from scrollContainer
+								while (parent && parent.nodeType && parent.nodeName !== 'BODY' && parent != this.scrollContainer) {
+								    if (parent.nodeName !== 'BODY' && parent != this.scrollContainer) {
 								        imgTop += parent.offsetTop;
 								    }
 								    parent = parent.parentNode;
-								} while (parent && parent != this.scrollContainer);
-								imgTop -= this.scrollContainer.scrollTop;
+								};
+								// Adjust for current scrollTop of scrollContainer
+								//  to find actual offset from visible viewport.
+								//  (window has no scrollTop, but has scrollY)
+								imgTop -= this.scrollContainer.hasOwnProperty('scrollTop') ?
+								   	this.scrollContainer.scrollTop : this.scrollContainer.scrollY;
 
-
-								var imgBottom = imgTop + position.h;
+								imgBottom = imgTop + position.h;
 
 								if( (imgTop > ( 0 - this.threshold ) && imgTop < ( box.h + this.threshold ) ) || ( imgBottom > ( 0 - this.threshold ) && imgBottom < ( box.h + this.threshold ) ) ){
 									n.src = attr.get(n, 'data-src');
