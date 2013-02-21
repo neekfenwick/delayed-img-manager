@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><head><title>DelayedImgManager Simple Test</title>
+	<script type="text/javascript">
+		var dojoConfig = { async: 1 };
+	</script>
+	<script type="text/javascript" href="../dojo/dojo.js"></script>
+
+	<script type="text/javascript">
+		require([
+			"dojo/dom",
+			"delayed-img-manager/DelayedImgManager",
+			"dojo/domReady!"
+		], function(dom, DelayedImgManager) {
+
+			// Create the manager
+			var dim = new DelayedImgManager({
+				container: container,
+				scrollContainer: scrollContainer
+			});
+			dim.startup();
+		});
+	</script>
+	<style type="text/css">
+		#testContainer {
+			position: absolute;
+			left: 20px;
+			top: 200px; /* offset us down a bit */
+			border: 2px solid black;
+			height: 140px; /* Give us scrollbars */
+		}
+	</style>
+</head><body>
+	<div id="testContainer">
+		<img data-src="resources/one.png">
+		<img data-src="resources/two.png">
+		<img data-src="resources/three.png">
+		<img data-src="resources/four.png">
+		<img data-src="resources/five.png">
+		<img data-src="resources/six.png">
+	</div>
+</body></html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head><title>DelayedImgManager Simple Test</title>
+	<script type="text/javascript">
+		var dojoConfig = { async: 1 };
+	</script>
+	<script type="text/javascript" href="../dojo/dojo.js"></script>
+
+	<script type="text/javascript">
+		require([
+			"delayed-img-manager/DelayedImgManager",
+			"dojo/domReady!"
+		], function(DelayedImgManager) {
+
+			// Create the manager
+			var dim = new DelayedImgManager();
+			dim.startup();
+
+		});
+	</script>
+</head><body>
+	<img data-src="resources/one.png">
+	<img data-src="resources/two.png">
+	<img data-src="resources/three.png">
+	<img data-src="resources/four.png">
+	<img data-src="resources/five.png">
+	<img data-src="resources/six.png">
+</body></html>
